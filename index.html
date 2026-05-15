@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare – Pharmaceutical Inventory Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ==================== HEADER ==================== -->
+    <header class="header">
+        <div class="header-inner">
+            <a class="logo-section" onclick="navigateTo('home')" title="MediCare Inventory System">
+                <div class="logo-icon">⧉</div>
+                <div class="logo-text">Medi<span>Care</span> <small style="font-size:0.7rem; color:var(--text-light); display:block;">Inventory System</small></div>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" onclick="navigateTo('home')" class="active" data-page="home">🏠 Home</a></li>
+                <li><a href="#" onclick="navigateTo('medicine')" data-page="medicine">💊 Medicines</a></li>
+                <li><a href="#" onclick="navigateTo('help')" data-page="help">❓ Help</a></li>
+                <li id="navDashboard" style="display:none;"><a href="#" onclick="openDashboard()" data-page="dashboard">📋 Dashboard</a></li>
+            </ul>
+            <div class="header-actions">
+                <div id="notificationBellWrapper" style="display:none;">
+                    <button class="btn btn-outline btn-sm" onclick="openNotifModal()" title="Notifications">
+                        🔔 <span class="badge" id="notifBadge" style="display:none; background:red; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; margin-left:4px;">0</span>
+                    </button>
+                </div>
+                <div id="cartIconWrapper" style="display:none;" class="cart-badge">
+                    <button class="btn btn-outline btn-sm" onclick="openCartModal()" title="View Cart">🛒 <span class="cart-count" id="cartCount">0</span></button>
+                </div>
+                <div id="userActionWrapper">
+                    <button class="btn btn-primary" id="accountBtn" onclick="handleAccountButton()">🔐 Login</button>
+                    <div class="user-menu-dropdown" id="accountDropdown">
+                        <a href="#" onclick="goToMyAccount()">📋 My Account</a>
+                        <a href="#" onclick="goToSettings()">⚙️ Settings</a>
+                        <button onclick="confirmLogout()">🚪 Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-content">
+
+        <!-- HOME PAGE -->
+        <div class="page active" id="page-home">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Your Health, <span>Our Priority</span></h1>
+                    <p>A comprehensive pharmaceutical inventory and management system.</p>
+                    <button class="btn btn-primary" onclick="navigateTo('medicine')">🛍️ Browse Medicines</button>
+                    <button class="btn btn-outline" style="margin-left:8px;" onclick="navigateTo('help')">📞 Get Help</button>
+                </div>
+                <div class="hero-visual"><div class="hero-circle">💊</div></div>
+            </div>
+            <div class="features-row">
+                <div class="feature-card"><div class="feature-icon">✅</div><h3>Genuine Medicines</h3><p>Certified manufacturers.</p></div>
+                <div class="feature-card"><div class="feature-icon">🚚</div><h3>Fast Delivery</h3><p>Within 24–48 hours.</p></div>
+                <div class="feature-card"><div class="feature-icon">👨‍⚕️</div><h3>Expert Doctors</h3><p>Available for consultations.</p></div>
+                <div class="feature-card"><div class="feature-icon">📅</div><h3>Appointments</h3><p>Manage reminders easily.</p></div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-card"><div class="stat-number">50,000+</div><div class="stat-label">Customers</div></div>
+                <div class="stat-card"><div class="stat-number">10,000+</div><div class="stat-label">Medicines</div></div>
+                <div class="stat-card"><div class="stat-number">500+</div><div class="stat-label">Pharmacies</div></div>
+                <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
+            </div>
+            <h2 class="section-title">👨‍⚕️ Meet Our Doctors</h2>
+            <div class="doctors-grid" id="doctorsGridHome"></div>
+        </div>
+
+        <!-- MEDICINE PAGE -->
+        <div class="page" id="page-medicine">
+            <h2 class="section-title">💊 Our Medicine Catalog</h2>
+            <div class="medicine-controls">
+                <input type="text" class="search-input" id="medicineSearch" placeholder="🔍 Search medicines..." oninput="renderMedicineGrid()">
+                <select class="filter-select" id="medicineCategoryFilter" onchange="renderMedicineGrid()">
+                    <option value="all">📂 All Categories</option>
+                    <option value="Pain Relief">Pain Relief</option>
+                    <option value="Antibiotic">Antibiotic</option>
+                    <option value="Diabetes">Diabetes</option>
+                    <option value="Digestive">Digestive</option>
+                    <option value="Allergy">Allergy</option>
+                    <option value="Cardiac">Cardiac</option>
+                    <option value="Vitamins">Vitamins</option>
+                    <option value="Hormone">Hormone</option>
+                </select>
+            </div>
+            <div class="medicine-grid" id="medicineGrid"></div>
+        </div>
+
+        <!-- HELP PAGE -->
+        <div class="page" id="page-help">
+            <div class="help-container">
+                <h2 class="section-title">❓ Help & Support</h2>
+                <div class="faq-item open"><div class="faq-question" onclick="toggleFaq(this)">How do I place an order? <span>▾</span></div><div class="faq-answer">Browse Medicines, add to cart, and checkout.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">How do I track medications? <span>▾</span></div><div class="faq-answer">Go to Dashboard → Daily Medications.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">How to schedule an appointment? <span>▾</span></div><div class="faq-answer">Dashboard → Appointments.</div></div>
+                <h3 style="color:var(--primary-dark);">📬 Contact Us</h3>
+                <div class="contact-form">
+                    <div class="form-group"><label>Your Name</label><input type="text" placeholder="Full name"></div>
+                    <div class="form-group"><label>Email</label><input type="email" placeholder="your@email.com"></div>
+                    <div class="form-group"><label>Message</label><textarea placeholder="How can we help?"></textarea></div>
+                    <button class="btn btn-primary" onclick="showNotification('Message sent!','success')">📨 Send Message</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD PAGE -->
+        <div class="page" id="page-dashboard">
+            <!-- Mobile dropdown – placed OUTSIDE the container so it’s always visible -->
+            <div class="dashboard-mobile-nav" id="dashboardMobileNav"></div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-sidebar" id="dashboardSidebar"></div>
+                <div class="dashboard-content" id="dashboardContent"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==================== LOGIN MODAL ==================== -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeLoginModal()">✕</button>
+            <h3>🔐 Sign In</h3>
+            <div id="loginFormFields">
+                <div class="form-group"><label>Email or Username</label><input type="text" id="loginIdentifier" placeholder="Enter email or Username"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="Enter password"></div>
+                <div class="form-group" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                    <label style="margin:0; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="rememberMe"> Remember me</label>
+                    <a href="#" style="font-size:0.85rem;" onclick="forgotPassword()">Forgot password?</a>
+                </div>
+                <button class="btn btn-primary" style="width:100%;" onclick="handleLogin()">🔐 Login</button>
+                <p style="text-align:center; margin-top:12px; font-size:0.9rem;">Don't have an account? <a href="#" onclick="switchToRegister()">Sign up</a></p>
+            </div>
+            <div id="registerForm" style="display:none;">
+                <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="Your full name"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="your@email.com"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Create password"></div>
+                <div class="form-group"><label>Confirm Password</label><input type="password" id="regConfirmPassword" placeholder="Re‑enter password"></div>
+                <button class="btn btn-success" style="width:100%;" onclick="registerUser()">✅ Create Account</button>
+                <p style="text-align:center;margin-top:10px;"><a href="#" onclick="switchToLogin()">Back to login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LOGOUT CONFIRMATION ==================== -->
+    <div class="modal-overlay" id="logoutConfirmModal">
+        <div class="modal-box" style="max-width:360px; text-align:center;">
+            <h3>🚪 Are you sure?</h3>
+            <p>Do you really want to log out?</p>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
+                <button class="btn btn-outline" onclick="closeLogoutConfirm()">Cancel</button>
+                <button class="btn btn-danger" onclick="finalLogout()">Yes, Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FORGOT PASSWORD MODAL ==================== -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal-box" style="max-width:440px;">
+            <button class="close-modal" onclick="closeForgotPasswordModal()">✕</button>
+            <h3>🔑 Reset Password</h3>
+            <div id="forgotStep1">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="forgotEmail" placeholder="Enter your registered email">
+                </div>
+                <button class="btn btn-primary" style="width:100%;" onclick="checkForgotEmail()">📧 Submit</button>
+                <p id="forgotError" style="color:red; text-align:center; margin-top:8px; display:none;"></p>
+            </div>
+            <div id="forgotStep2" style="display:none;">
+                <p style="text-align:center; color:var(--primary-dark);">Account found! Enter your new password.</p>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="forgotNewPassword" placeholder="New password">
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="forgotConfirmPassword" placeholder="Re‑enter new password">
+                </div>
+                <button class="btn btn-success" style="width:100%;" onclick="resetPassword()">✅ Change Password</button>
+                <p id="forgotError2" style="color:red; text-align:center; margin-top:8px; display:none;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CART MODAL ==================== -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-box" style="max-width:550px;">
+            <button class="close-modal" onclick="closeCartModal()">✕</button>
+            <h3>🛒 Your Cart</h3>
+            <div id="cartItemsContainer"><p style="text-align:center;">Your cart is empty.</p></div>
+            <div id="cartTotal" style="font-weight:700;font-size:1.1rem;text-align:right;margin-top:12px;display:none;"></div>
+            <button class="btn btn-success" style="width:100%;margin-top:12px;display:none;" id="checkoutBtn">💳 Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- ==================== CHECKOUT MODAL ==================== -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-box" style="max-width:650px; max-height:90vh; overflow-y:auto;">
+            <button class="close-modal" onclick="closeCheckoutModal()">✕</button>
+            <h3>🛍️ Checkout</h3>
+            <div id="checkoutContent"></div>
+        </div>
+    </div>
+
+    <!-- ==================== NOTIFICATIONS MODAL ==================== -->
+    <div class="modal-overlay" id="notifModal">
+        <div class="modal-box" style="max-width:600px; max-height:80vh; overflow-y:auto;">
+            <button class="close-modal" onclick="closeNotifModal()">✕</button>
+            <h3>🔔 Notifications</h3>
+            <div class="modal-tabs" id="notifTabs"></div>
+            <div id="notifContent"></div>
+        </div>
+    </div>
+
+    <!-- ==================== MEDICINE DETAIL MODAL ==================== -->
+    <div class="medicine-detail-modal" id="medicineDetailModal">
+        <div class="medicine-detail-content" id="medicineDetailContent"></div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 <strong>MediCare – Pharmaceutical Inventory Management System</strong>. All rights reserved.</p>
+    </footer>
+
+    <div id="notificationContainer"></div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="products.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxgoI30C2-PQ_fElmwa4AXtfohbKebvxM",
+            authDomain: "pharmaweb-d1a42.firebaseapp.com",
+            projectId: "pharmaweb-d1a42",
+            storageBucket: "pharmaweb-d1a42.firebasestorage.app",
+            messagingSenderId: "157145926871",
+            appId: "1:157145926871:web:0f2af37195964f72367492",
+            measurementId: "G-0187MCS5KY"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.db = db;
+        window.firebaseAddDoc = addDoc;
+        window.firebaseCollection = collection;
+        window.firebaseGetDocs = getDocs;
+        window.firebaseQuery = query;
+        window.firebaseWhere = where;
+        window.firebaseUpdateDoc = updateDoc;
+        window.firebaseDoc = doc;
+        window.firebaseDeleteDoc = deleteDoc;
+
+        async function seedData() {
+            const medsRef = collection(db, "medicines");
+            const medsSnap = await getDocs(medsRef);
+            if (medsSnap.empty && typeof DEFAULT_MEDICINES !== 'undefined') {
+                const promises = DEFAULT_MEDICINES.map(med => { const { id, ...data } = med; return addDoc(medsRef, data); });
+                await Promise.all(promises);
+            }
+
+            const docsRef = collection(db, "doctors");
+            const docsSnap = await getDocs(docsRef);
+            if (docsSnap.empty) {
+                const defaultDoctors = [
+                    { name: "Dr. Sarah Johnson", specialty: "Cardiologist", image: "https://randomuser.me/api/portraits/women/44.jpg", bio: "Over 15 years of experience." },
+                    { name: "Dr. Mark Villanueva", specialty: "Pediatrician", image: "https://randomuser.me/api/portraits/men/32.jpg", bio: "Children's health specialist." },
+                    { name: "Dr. Emily Chen", specialty: "Dermatologist", image: "https://randomuser.me/api/portraits/women/68.jpg", bio: "Expert in skin care." }
+                ];
+                const docPromises = defaultDoctors.map(d => addDoc(docsRef, d));
+                await Promise.all(docPromises);
+            }
+        }
+        seedData();
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
